@@ -79,9 +79,7 @@ public class AccountsPage extends Page {
             accID = takeUserInputInt();
             databaseConnector.openConnection();
             databaseConnector.resultSet = databaseConnector.executeQuery("SELECT accounts.* FROM accounts" +
-                    " INNER JOIN users" +
-                    " ON users.user_id = accounts.user_id " +
-                    "WHERE accounts.account_id = " + accID + ";");
+                    " WHERE accounts.account_id = " + accID + ";");
             if(databaseConnector.resultSet == null){
                 System.out.println("The account does not exist. Please try again.");
                 return;

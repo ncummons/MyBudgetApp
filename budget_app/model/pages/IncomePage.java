@@ -85,9 +85,7 @@ public class IncomePage extends Page {
         try {
             incID = takeUserInputInt();
             databaseConnector.openConnection();
-            databaseConnector.resultSet = databaseConnector.executeQuery("SELECT income.* FROM income" +
-                    " INNER JOIN users" +
-                    " ON users.user_id = income.user_id " +
+            databaseConnector.resultSet = databaseConnector.executeQuery("SELECT income.* FROM income " +
                     "WHERE income.income_id = " + incID + ";");
             if(databaseConnector.resultSet == null){
                 System.out.println("The income does not exist. Please try again.");

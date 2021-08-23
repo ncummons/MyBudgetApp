@@ -19,7 +19,7 @@ public class DebtPage extends Page {
     @Override
     public void printPage() {
         System.out.println("______________________________________________________________________________");
-        System.out.println("Welcome to the Debt Information! You'll find your debt information below.");
+        System.out.println("Welcome to the Debt Information Page! You'll find your debt information below.");
         System.out.println();
         System.out.println("When you would like to move back to the main menu, simply type \"1\".");
         System.out.println("If you would like to close out of the program,simply type \"2\".");
@@ -76,9 +76,7 @@ public class DebtPage extends Page {
         try {
             debtID = takeUserInputInt();
             databaseConnector.openConnection();
-            databaseConnector.resultSet = databaseConnector.executeQuery("SELECT debts.* FROM debts" +
-                    " INNER JOIN users" +
-                    " ON users.user_id = debts.user_id " +
+            databaseConnector.resultSet = databaseConnector.executeQuery("SELECT debts.* FROM debts " +
                     "WHERE debts.debt_id = " + debtID + ";");
 
             if(databaseConnector.resultSet == null){
