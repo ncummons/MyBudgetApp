@@ -1,7 +1,5 @@
 package budget_app.model.pages;
 
-import budget_app.data.Account;
-import budget_app.data.Expense;
 import budget_app.data.Income;
 import budget_app.data.User;
 import budget_app.model.Page;
@@ -183,7 +181,7 @@ public class IncomePage extends Page {
                         System.out.print("Is this a one time income? (Type yes or no): ");
                     }
                 }
-                System.out.print("What is the weekly interval between paychecks? (Enter 0 if one time)");
+                System.out.print("What is the weekly interval between paychecks? (Enter 0 if one time) | ");
                 int weeklyInterval = takeUserInputInt();
 
                 // INSERT INTO orders ( userid, timestamp)
@@ -194,14 +192,14 @@ public class IncomePage extends Page {
 
                 databaseConnector.openConnection();
 
-                databaseConnector.preparedStatement = databaseConnector.prepareInsertStatement(sqlInsert);
+                databaseConnector.preparedStatement = databaseConnector.prepareStatement(sqlInsert);
                 databaseConnector.preparedStatement.setString(1, incomeSource);
                 databaseConnector.preparedStatement.setDouble(2, incomeAmt);
                 databaseConnector.preparedStatement.setInt(3, incOT);
                 databaseConnector.preparedStatement.setInt(4,weeklyInterval);
                 databaseConnector.preparedStatement.setInt(5, user.getUser_id());
 
-                databaseConnector.executePreparedStatement();
+                databaseConnector.executePreparedInsertStatement();
 
             } catch (SQLException e) {
                 e.printStackTrace();

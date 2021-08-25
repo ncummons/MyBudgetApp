@@ -55,8 +55,7 @@ public class DatabaseConnector {
     /** Similar to general update statement, error message is different
      INSERT INTO table(column, column, column) VALUES(?, ?, ?) */
 
-    public PreparedStatement prepareInsertStatement(String sqlInsert){
-        int returnInt = 0;
+    public PreparedStatement prepareStatement(String sqlInsert){
         try{
             preparedStatement = connection.prepareStatement(sqlInsert);
         } catch (SQLException e){
@@ -87,9 +86,29 @@ public class DatabaseConnector {
         return query;
     }
 
-    public void executePreparedStatement( ){
+    public void executePreparedInsertStatement( ){
         try {
             preparedStatement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Returns the number of rows affected
+
+    public int executePreparedUpdateStatement(){
+        int ret = 0;
+        try {
+            ret = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ret;
+    }
+
+    public void executePreparedSelectStatement(){
+        try {
+            resultSet = preparedStatement.executeQuery();
         } catch (SQLException e) {
             e.printStackTrace();
         }

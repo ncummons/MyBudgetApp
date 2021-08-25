@@ -1,7 +1,6 @@
 package budget_app.model.pages;
 
 import budget_app.data.CustomGoal;
-import budget_app.data.Debt;
 import budget_app.data.User;
 import budget_app.model.Page;
 import budget_app.services.DatabaseConnector;
@@ -180,14 +179,14 @@ public class CustomGoalsPage extends Page {
 
                 databaseConnector.openConnection();
 
-                databaseConnector.preparedStatement = databaseConnector.prepareInsertStatement(sqlInsert);
+                databaseConnector.preparedStatement = databaseConnector.prepareStatement(sqlInsert);
                 databaseConnector.preparedStatement.setString(1, goalName);
                 databaseConnector.preparedStatement.setDouble(2, totalNeeded);
                 databaseConnector.preparedStatement.setDouble(3,monthlyContribution);
                 databaseConnector.preparedStatement.setDouble(4,amountSaved);
                 databaseConnector.preparedStatement.setInt(5, user.getUser_id());
 
-                databaseConnector.executePreparedStatement();
+                databaseConnector.executePreparedInsertStatement();
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {

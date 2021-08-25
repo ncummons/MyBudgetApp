@@ -70,12 +70,12 @@ public class NewUserPage extends Page {
         try{
             databaseConnector.openConnection();
             String sql = "INSERT INTO Users(first_name, last_name, username, password) VALUES (?, ?, ?, ?)";
-            databaseConnector.prepareInsertStatement(sql);
+            databaseConnector.prepareStatement(sql);
             databaseConnector.preparedStatement.setString(1, user.getFirst_name());
             databaseConnector.preparedStatement.setString(2, user.getLast_name());
             databaseConnector.preparedStatement.setString(3, user.getUsername());
             databaseConnector.preparedStatement.setString(4, user.getPassword());
-            databaseConnector.executePreparedStatement();
+            databaseConnector.executePreparedInsertStatement();
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

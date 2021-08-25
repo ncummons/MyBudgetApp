@@ -151,13 +151,13 @@ public class AccountsPage extends Page {
 
                 databaseConnector.openConnection();
 
-                databaseConnector.preparedStatement = databaseConnector.prepareInsertStatement(sqlInsert);
+                databaseConnector.preparedStatement = databaseConnector.prepareStatement(sqlInsert);
                 databaseConnector.preparedStatement.setString(1, accountName);
                 databaseConnector.preparedStatement.setString(2, bankName);
                 databaseConnector.preparedStatement.setDouble(3, accountBalance);
                 databaseConnector.preparedStatement.setInt(4, user.getUser_id());
 
-                databaseConnector.executePreparedStatement();
+                databaseConnector.executePreparedInsertStatement();
 
             } catch (SQLException e) {
                 e.printStackTrace();

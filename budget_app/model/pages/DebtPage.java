@@ -1,7 +1,6 @@
 package budget_app.model.pages;
 
 import budget_app.data.Debt;
-import budget_app.data.Expense;
 import budget_app.data.User;
 import budget_app.model.Page;
 import budget_app.services.DatabaseConnector;
@@ -207,7 +206,7 @@ public class DebtPage extends Page {
 
                 databaseConnector.openConnection();
 
-                databaseConnector.preparedStatement = databaseConnector.prepareInsertStatement(sqlInsert);
+                databaseConnector.preparedStatement = databaseConnector.prepareStatement(sqlInsert);
                 databaseConnector.preparedStatement.setString(1, debtName);
                 databaseConnector.preparedStatement.setDouble(2, debtAmount);
                 databaseConnector.preparedStatement.setDouble(3,monthlyPayment);
@@ -217,7 +216,7 @@ public class DebtPage extends Page {
                 databaseConnector.preparedStatement.setInt(7, debtDueDate);
                 databaseConnector.preparedStatement.setInt(8, user.getUser_id());
 
-                databaseConnector.executePreparedStatement();
+                databaseConnector.executePreparedInsertStatement();
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {

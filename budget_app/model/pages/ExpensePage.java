@@ -143,13 +143,13 @@ public class ExpensePage extends Page {
 
                 databaseConnector.openConnection();
 
-                databaseConnector.preparedStatement = databaseConnector.prepareInsertStatement(sqlInsert);
+                databaseConnector.preparedStatement = databaseConnector.prepareStatement(sqlInsert);
                 databaseConnector.preparedStatement.setString(1, expenseName);
                 databaseConnector.preparedStatement.setString(2, categoryString);
                 databaseConnector.preparedStatement.setDouble(3, expenseAmount);
                 databaseConnector.preparedStatement.setInt(4, user.getUser_id());
 
-                databaseConnector.executePreparedStatement();
+                databaseConnector.executePreparedInsertStatement();
             } catch (SQLException e) {
                 e.printStackTrace();
             } finally {
