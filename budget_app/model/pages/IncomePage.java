@@ -63,8 +63,12 @@ public class IncomePage extends Page {
         DatabaseConnector databaseConnector = new DatabaseConnector();
         int incID;
         System.out.println("Which Income would you like to delete? Enter the corresponding income id below.");
+        System.out.println("To cancel, just type \"0\".");
         try {
             incID = takeUserInputInt();
+            if (incID == 0){
+                return;
+            }
             String sql = "DELETE FROM income WHERE income_id = " + incID + ";";
             databaseConnector.openConnection();
             databaseConnector.executeDeleteStatement(sql);
@@ -80,8 +84,12 @@ public class IncomePage extends Page {
         DatabaseConnector databaseConnector = new DatabaseConnector();
         int incID;
         System.out.println("Which Income would you like to update? Enter the corresponding income id below: ");
+        System.out.println("To cancel, just type \"0\".");
         try {
             incID = takeUserInputInt();
+            if(incID == 0){
+                return;
+            }
             databaseConnector.openConnection();
             databaseConnector.resultSet = databaseConnector.executeQuery("SELECT income.* FROM income " +
                     "WHERE income.income_id = " + incID + ";");
@@ -105,8 +113,8 @@ public class IncomePage extends Page {
             }
 
             // Take user input for what to update, then update it
-            System.out.print("Income source: ");
-            String incSource = takeUserInputString();
+            System.out.println("Income source: ");
+            String incomeSource = takeUserInputString();
             System.out.println();
             System.out.print("Income amount: $");
             double incAmount  = takeUserInputDouble();
@@ -132,7 +140,7 @@ public class IncomePage extends Page {
             int weeklyInterval = takeUserInputInt();
 
             int rows = databaseConnector.executeUpdateStatement("UPDATE income " +
-                    "SET income_source = \"" + incSource + "\", income_amount = " + incAmount + ", " +
+                    "SET income_source = \"" + incomeSource + "\", income_amount = " + incAmount + ", " +
                     "is_one_time = " + incOT + ", income_weekly_interval = " + weeklyInterval +
                     " WHERE income.income_id = " + incID + ";");
             if(rows != 0){
