@@ -60,11 +60,15 @@ public class UserInformationPage extends Page {
 
     private void changeLastName() {
         DatabaseConnector databaseConnector = new DatabaseConnector();
+        System.out.println("To cancel, just type \"cancel\".");
         System.out.print("Last Name: ");
         String lastName = takeUserInputString();
         System.out.println();
 
         try {
+            if (lastName.compareToIgnoreCase("cancel") == 0){
+                return;
+            }
             String pStatement = "UPDATE users set last_name = ? WHERE user_id = ?";
             databaseConnector.openConnection();
             databaseConnector.preparedStatement = databaseConnector.prepareStatement(pStatement);
@@ -83,11 +87,15 @@ public class UserInformationPage extends Page {
 
     private void changeFirstName() {
         DatabaseConnector databaseConnector = new DatabaseConnector();
+        System.out.println("To cancel, just type \"cancel\".");
         System.out.print("First Name: ");
         String firstName = takeUserInputString();
         System.out.println();
 
         try {
+            if(firstName.compareToIgnoreCase("cancel") == 0){
+                return;
+            }
             String pStatement = "UPDATE users set first_name = ? WHERE user_id = ?";
             databaseConnector.openConnection();
             databaseConnector.preparedStatement = databaseConnector.prepareStatement(pStatement);
@@ -109,8 +117,12 @@ public class UserInformationPage extends Page {
         boolean unconfirmed = true;
         String password = user.getPassword();
         while(unconfirmed) {
+            System.out.println("To cancel, just type \"cancel\".");
             System.out.print("New Password: ");
             password = takeUserInputString();
+            if (password.compareToIgnoreCase("cancel") == 0){
+                return;
+            }
             System.out.println();
             System.out.print("Please confirm password: ");
             String confirmation = takeUserInputString();
@@ -141,11 +153,15 @@ public class UserInformationPage extends Page {
 
     private void changeUsername() {
         DatabaseConnector databaseConnector = new DatabaseConnector();
+        System.out.println("To cancel, just type \"cancel\".");
         System.out.print("New Username: ");
         String username = takeUserInputString();
         System.out.println();
 
         try {
+            if(username.compareToIgnoreCase("cancel") ==0){
+                return;
+            }
             String pStatement = "UPDATE users set username = ? WHERE user_id = ?";
             databaseConnector.openConnection();
             databaseConnector.preparedStatement = databaseConnector.prepareStatement(pStatement);

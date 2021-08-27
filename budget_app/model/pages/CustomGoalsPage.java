@@ -48,9 +48,13 @@ public class CustomGoalsPage extends Page {
     private void deleteCustomGoal() {
         DatabaseConnector databaseConnector = new DatabaseConnector();
         int customGoalID;
+        System.out.println("To cancel, just type \"0\".");
         System.out.println("Which goal would you like to delete? Enter the corresponding goal id below.");
         try {
             customGoalID = takeUserInputInt();
+            if(customGoalID == 0){
+                return;
+            }
             String sql = "DELETE FROM custom_goals WHERE custom_goal_id = " + customGoalID + ";";
             databaseConnector.openConnection();
             databaseConnector.executeDeleteStatement(sql);
@@ -64,9 +68,13 @@ public class CustomGoalsPage extends Page {
     private void updateCustomGoal() {
         DatabaseConnector databaseConnector = new DatabaseConnector();
         int customGoalID;
+        System.out.println("To cancel, just type \"0\".");
         System.out.println("Which Goal would you like to update? Enter the corresponding goal id below: ");
         try {
             customGoalID = takeUserInputInt();
+            if(customGoalID == 0){
+                return;
+            }
             databaseConnector.openConnection();
             databaseConnector.resultSet = databaseConnector.executeQuery("SELECT custom_goals.* FROM custom_goals " +
                     "WHERE custom_goals.custom_goal_id = " + customGoalID + ";");

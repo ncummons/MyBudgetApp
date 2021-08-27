@@ -55,9 +55,13 @@ public class DebtPage extends Page {
     private void deleteDebt() {
         DatabaseConnector databaseConnector = new DatabaseConnector();
         int debtID;
+        System.out.println("To cancel, just type \"0\".");
         System.out.println("Which Debt would you like to delete? Enter the corresponding debt id below.");
         try {
             debtID = takeUserInputInt();
+            if(debtID == 0){
+                return;
+            }
             String sql = "DELETE FROM debts WHERE debt_id = " + debtID + ";";
             databaseConnector.openConnection();
             databaseConnector.executeDeleteStatement(sql);
@@ -71,9 +75,13 @@ public class DebtPage extends Page {
     private void updateDebt() {
         DatabaseConnector databaseConnector = new DatabaseConnector();
         int debtID;
+        System.out.println("To cancel, just type \"0\".");
         System.out.println("Which Debt would you like to update? Enter the corresponding debt id below: ");
         try {
             debtID = takeUserInputInt();
+            if(debtID == 0){
+                return;
+            }
             databaseConnector.openConnection();
             databaseConnector.resultSet = databaseConnector.executeQuery("SELECT debts.* FROM debts " +
                     "WHERE debts.debt_id = " + debtID + ";");
