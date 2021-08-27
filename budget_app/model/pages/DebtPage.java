@@ -99,7 +99,6 @@ public class DebtPage extends Page {
             debt.setMonthly_payment(databaseConnector.resultSet.getDouble("monthly_payment"));
             debt.setAmount(databaseConnector.resultSet.getDouble("amount"));
             debt.setInterest_rate(databaseConnector.resultSet.getDouble("interest_rate"));
-            debt.setDebt_length_months(databaseConnector.resultSet.getInt("debt_length_months"));
             debt.setLender_name(databaseConnector.resultSet.getString("lender_name"));
             debt.setDebt_due_date(databaseConnector.resultSet.getInt("debt_due_date"));
 
@@ -125,9 +124,6 @@ public class DebtPage extends Page {
                 }
             }
             System.out.println();
-            System.out.print("Length of the debt in months: ");
-            int debtLength = takeUserInputInt();
-            System.out.println();
             System.out.print("Lender Name: ");
             String lenderName = takeUserInputString();
             System.out.println();
@@ -145,8 +141,7 @@ public class DebtPage extends Page {
 
             databaseConnector.executeUpdateStatement("UPDATE debts " +
                     "SET debt_name = \"" + debtName + "\", amount = " + debtAmount + ", interest_rate = " +
-                    debtInterestRate + ", monthly_payment = " + monthlyPayment +
-                    ", debt_length_months = " + debtLength + ", debt_due_date = " + debtDueDate +
+                    debtInterestRate + ", monthly_payment = " + monthlyPayment + ", debt_due_date = " + debtDueDate +
                     ", lender_name = \"" + lenderName + "\" WHERE debts.debt_id = " + debtID + ";");
         } catch (Exception e) {
             e.printStackTrace();
@@ -189,9 +184,6 @@ public class DebtPage extends Page {
                     }
                 }
                 System.out.println();
-                System.out.print("Length of the debt in months: ");
-                int debtLength = takeUserInputInt();
-                System.out.println();
                 System.out.print("Lender Name: ");
                 String lenderName = takeUserInputString();
                 System.out.println();
@@ -209,8 +201,8 @@ public class DebtPage extends Page {
 
 
 
-                String sqlInsert = "INSERT INTO debts(debt_name, amount, monthly_payment, interest_rate, debt_length_months, " +
-                        "lender_name, debt_due_date, user_id) VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
+                String sqlInsert = "INSERT INTO debts(debt_name, amount, monthly_payment, interest_rate, " +
+                        "lender_name, debt_due_date, user_id) VALUES(?, ?, ?, ?, ?, ?, ?)";
 
                 databaseConnector.openConnection();
 
@@ -219,10 +211,9 @@ public class DebtPage extends Page {
                 databaseConnector.preparedStatement.setDouble(2, debtAmount);
                 databaseConnector.preparedStatement.setDouble(3,monthlyPayment);
                 databaseConnector.preparedStatement.setDouble(4,debtInterestRate);
-                databaseConnector.preparedStatement.setInt(5, debtLength);
-                databaseConnector.preparedStatement.setString(6,lenderName);
-                databaseConnector.preparedStatement.setInt(7, debtDueDate);
-                databaseConnector.preparedStatement.setInt(8, user.getUser_id());
+                databaseConnector.preparedStatement.setString(5,lenderName);
+                databaseConnector.preparedStatement.setInt(6, debtDueDate);
+                databaseConnector.preparedStatement.setInt(7, user.getUser_id());
 
                 databaseConnector.executePreparedInsertStatement();
             } catch (SQLException e) {
@@ -249,7 +240,7 @@ public class DebtPage extends Page {
                     " | " + "Debt Interest Rate: " + d.getInterest_rate() + "% | Lender Name: " + d.getLender_name());
             System.out.println();
             System.out.println("Debt Amount: $" + d.getAmount() + " | Monthly Payment: $" + d.getMonthly_payment() +
-                    " | Day of the month due: " + d.getDebt_due_date() + " | Months left to pay: " + d.getDebt_length_months());
+                    " | Day of the month due: " + d.getDebt_due_date() + " |");
             System.out.println("______________________________________________________________________________");
         }
     }
@@ -286,7 +277,6 @@ public class DebtPage extends Page {
                 debt.setAmount(databaseConnector.resultSet.getDouble("amount"));
                 debt.setMonthly_payment(databaseConnector.resultSet.getDouble("monthly_payment"));
                 debt.setInterest_rate(databaseConnector.resultSet.getDouble("interest_rate"));
-                debt.setDebt_length_months(databaseConnector.resultSet.getInt("debt_length_months"));
                 debt.setDebt_due_date(databaseConnector.resultSet.getInt("debt_due_date"));
                 debt.setLender_name(databaseConnector.resultSet.getString("lender_name"));
                 debt.setUser_id(user.getUser_id());

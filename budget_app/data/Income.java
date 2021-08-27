@@ -4,15 +4,15 @@ public class Income {
     private int income_id;
     private double income_amount;
     private String income_source;
-    private int income_weekly_interval;
+    private int income_per_month;
     private boolean is_one_time;
     private int user_id;
 
 
-    public Income(double income_amount, String income_source, int income_weekly_interval, boolean is_one_time, int user_id) {
+    public Income(double income_amount, String income_source, int income_per_month, boolean is_one_time, int user_id) {
         this.income_amount = income_amount;
         this.income_source = income_source;
-        this.income_weekly_interval = income_weekly_interval;
+        this.income_per_month = income_per_month;
         this.is_one_time = is_one_time;
         this.user_id = user_id;
     }
@@ -52,12 +52,12 @@ public class Income {
         this.income_source = income_source;
     }
 
-    public int getIncome_weekly_interval() {
-        return income_weekly_interval;
+    public int getIncome_per_month() {
+        return income_per_month;
     }
 
-    public void setIncome_weekly_interval(int income_weekly_interval) {
-        this.income_weekly_interval = income_weekly_interval;
+    public void setIncome_per_month(int income_per_month) {
+        this.income_per_month = income_per_month;
     }
 
     public boolean isIs_one_time() {
@@ -68,11 +68,11 @@ public class Income {
         this.is_one_time = is_one_time;
     }
 
-    public Income(int income_id, double income_amount, String income_source, int income_weekly_interval, boolean is_one_time) {
+    public Income(int income_id, double income_amount, String income_source, int income_per_month, boolean is_one_time) {
         this.income_id = income_id;
         this.income_amount = income_amount;
         this.income_source = income_source;
-        this.income_weekly_interval = income_weekly_interval;
+        this.income_per_month = income_per_month;
         this.is_one_time = is_one_time;
     }
 

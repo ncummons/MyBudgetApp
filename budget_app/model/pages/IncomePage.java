@@ -104,7 +104,7 @@ public class IncomePage extends Page {
             inc.setIncome_id(databaseConnector.resultSet.getInt("income_id"));
             inc.setIncome_amount(databaseConnector.resultSet.getDouble("income_amount"));
             inc.setIncome_source(databaseConnector.resultSet.getString("income_source"));
-            inc.setIncome_weekly_interval(databaseConnector.resultSet.getInt("income_weekly_interval"));
+            inc.setIncome_per_month(databaseConnector.resultSet.getInt("income_per_month"));
             int boolInt = databaseConnector.resultSet.getInt("is_one_time");
             if(boolInt == 1) {
                 inc.setIs_one_time(true);
@@ -136,12 +136,12 @@ public class IncomePage extends Page {
                 }
             }
             System.out.println();
-            System.out.print("What is the weekly interval between paychecks? | ");
-            int weeklyInterval = takeUserInputInt();
+            System.out.print("How many times per month do you receive this paycheck? | ");
+            int income_per_month = takeUserInputInt();
 
             int rows = databaseConnector.executeUpdateStatement("UPDATE income " +
                     "SET income_source = \"" + incomeSource + "\", income_amount = " + incAmount + ", " +
-                    "is_one_time = " + incOT + ", income_weekly_interval = " + weeklyInterval +
+                    "is_one_time = " + incOT + ", income_per_month = " + income_per_month +
                     " WHERE income.income_id = " + incID + ";");
             if(rows != 0){
                 System.out.println("Update successful.");
@@ -189,14 +189,14 @@ public class IncomePage extends Page {
                         System.out.print("Is this a one time income? (Type yes or no): ");
                     }
                 }
-                System.out.print("What is the weekly interval between paychecks? (Enter 0 if one time) | ");
-                int weeklyInterval = takeUserInputInt();
+                System.out.print("How many times per month do you receive this paycheck? (Enter 0 if one time) | ");
+                int income_per_month = takeUserInputInt();
 
                 // INSERT INTO orders ( userid, timestamp)
                 // SELECT o.userid , o.timestamp FROM users u INNER JOIN orders o ON  o.userid = u.id
 
                 String sqlInsert = "INSERT INTO income(income_source, income_amount, " +
-                        "is_one_time, income_weekly_interval, user_id) VALUES(?, ?, ?, ?, ?)";
+                        "is_one_time, income_per_month, user_id) VALUES(?, ?, ?, ?, ?)";
 
                 databaseConnector.openConnection();
 
@@ -204,7 +204,7 @@ public class IncomePage extends Page {
                 databaseConnector.preparedStatement.setString(1, incomeSource);
                 databaseConnector.preparedStatement.setDouble(2, incomeAmt);
                 databaseConnector.preparedStatement.setInt(3, incOT);
-                databaseConnector.preparedStatement.setInt(4,weeklyInterval);
+                databaseConnector.preparedStatement.setInt(4,income_per_month);
                 databaseConnector.preparedStatement.setInt(5, user.getUser_id());
 
                 databaseConnector.executePreparedInsertStatement();
@@ -230,7 +230,7 @@ public class IncomePage extends Page {
     private void printIncomeInfo(Income[] incomes) {
         for (Income i: incomes) {
             System.out.print("Income ID: " + i.getIncome_id() + " | Income Source: " + i.getIncome_source() +
-                    " | " + "Income Weekly Interval: " + i.getIncome_weekly_interval() + " | One Time? ");
+                    " | " + "Frequency per month: " + i.getIncome_per_month() + " | One Time? ");
             if(i.isIs_one_time()) {
                 System.out.print("Yes.");
             } else {
@@ -272,7 +272,7 @@ public class IncomePage extends Page {
                 inc.setIncome_id(databaseConnector.resultSet.getInt("income_id"));
                 inc.setIncome_source(databaseConnector.resultSet.getString("income_source"));
                 inc.setIncome_amount(databaseConnector.resultSet.getDouble("income_amount"));
-                inc.setIncome_weekly_interval(databaseConnector.resultSet.getInt("income_weekly_interval"));
+                inc.setIncome_per_month(databaseConnector.resultSet.getInt("income_per_month"));
                 int boolInt = databaseConnector.resultSet.getInt("is_one_time");
                 if (boolInt == 1) {
                     inc.setIs_one_time(true);
