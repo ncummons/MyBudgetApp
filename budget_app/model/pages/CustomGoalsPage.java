@@ -6,6 +6,7 @@ import budget_app.model.Page;
 import budget_app.services.DatabaseConnector;
 import budget_app.services.SQLDeletes;
 import budget_app.services.SQLQueries;
+import budget_app.services.SQLUpdates;
 
 import java.sql.SQLException;
 
@@ -52,75 +53,7 @@ public class CustomGoalsPage extends Page {
     }
 
     private void updateCustomGoal() {
-        DatabaseConnector databaseConnector = new DatabaseConnector();
-        int customGoalID;
-        System.out.println("To cancel, just type \"0\".");
-        System.out.println("Which Goal would you like to update? Enter the corresponding goal id below: ");
-        try {
-            customGoalID = takeUserInputInt();
-            if(customGoalID == 0){
-                return;
-            }
-            databaseConnector.openConnection();
-            databaseConnector.resultSet = databaseConnector.executeQuery("SELECT custom_goals.* FROM custom_goals " +
-                    "WHERE custom_goals.custom_goal_id = " + customGoalID + ";");
-
-            if(databaseConnector.resultSet == null){
-                System.out.println("The goal does not exist. Please try again.");
-                return;
-            }
-            // Create the object of the account
-            databaseConnector.resultSet.next();
-            CustomGoal customGoal = new CustomGoal();
-            customGoal.setUser_id(user.getUser_id());
-            customGoal.setCustom_goal_id(databaseConnector.resultSet.getInt("custom_goal_id"));
-            customGoal.setGoal_name(databaseConnector.resultSet.getString("goal_name"));
-            customGoal.setMonthly_contribution(databaseConnector.resultSet.getDouble("monthly_contribution"));
-            customGoal.setTotal_needed(databaseConnector.resultSet.getDouble("total_needed"));
-            customGoal.setAmount_saved(databaseConnector.resultSet.getDouble("amount_saved"));
-
-
-            // Take user input for what to update, then update it
-            System.out.print("Goal name: ");
-            String goalName = takeUserInputString();
-            System.out.println();
-            System.out.print("Total amount needed: $");
-            double totalNeeded  = takeUserInputDouble();
-            System.out.println();
-            System.out.print("Monthly contribution amount: $");
-            double monthlyContribution = 0;
-            boolean unconfirmed = true;
-            while(unconfirmed) {
-                monthlyContribution = takeUserInputDouble();
-                if(monthlyContribution >= 0 && monthlyContribution <= totalNeeded){
-                    unconfirmed = false;
-                } else {
-                    System.out.println("Please choose a valid number between 0 and the total amount needed.");
-                }
-            }
-            System.out.println();
-            System.out.print("Amount saved so far: $");
-            double amountSaved = 0;
-            unconfirmed = true;
-            while(unconfirmed) {
-                amountSaved = takeUserInputDouble();
-                if(amountSaved >= 0 && amountSaved <= totalNeeded){
-                    unconfirmed = false;
-                } else {
-                    System.out.println("Please choose a valid number between 0 and the total amount needed.");
-                }
-            }
-            System.out.println();
-
-            databaseConnector.executeUpdateStatement("UPDATE custom_goals " +
-                    "SET goal_name = \"" + goalName + "\", total_needed = " + totalNeeded + ", monthly_contribution = " +
-                    monthlyContribution + ", amount_saved = " + amountSaved + " WHERE custom_goals.custom_goal_id = " + customGoalID + ";");
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("There was a problem updating your goal. Please try again later.");
-        }finally {
-            databaseConnector.closeConnection();
-        }
+        SQLUpdates.updateCustomGoal(this.user);
     }
 
     private void addCustomGoals() {

@@ -1,11 +1,13 @@
 package budget_app.model.pages;
 
+import budget_app.controllers.UserInterface;
 import budget_app.data.Expense;
 import budget_app.data.User;
 import budget_app.model.Page;
 import budget_app.services.DatabaseConnector;
 import budget_app.services.SQLDeletes;
 import budget_app.services.SQLQueries;
+import budget_app.services.SQLUpdates;
 
 import java.sql.SQLException;
 
@@ -59,54 +61,7 @@ public class ExpensePage extends Page {
     }
 
     private void updateExpense() {
-        DatabaseConnector databaseConnector = new DatabaseConnector();
-        int expenseID;
-        System.out.println("To cancel, just type \"0\".");
-        System.out.println("Which Expense would you like to update? Enter the corresponding expense id below: ");
-        try {
-            expenseID = takeUserInputInt();
-            if (expenseID == 0){
-                return;
-            }
-            databaseConnector.openConnection();
-            databaseConnector.resultSet = databaseConnector.executeQuery("SELECT expenses.* FROM expenses" +
-                    " INNER JOIN users" +
-                    " ON users.user_id = expenses.user_id " +
-                    "WHERE expenses.expense_id = " + expenseID + ";");
-
-            if(databaseConnector.resultSet == null){
-                System.out.println("The expense does not exist. Please try again.");
-                return;
-            }
-            // Create the object of the account
-            databaseConnector.resultSet.next();
-            Expense expense = new Expense();
-            expense.setUser_id(user.getUser_id());
-            expense.setExpense_id(databaseConnector.resultSet.getInt("expense_id"));
-            expense.setExpense_name(databaseConnector.resultSet.getString("expense_name"));
-            expense.setExpense_amount(databaseConnector.resultSet.getDouble("expense_amount"));
-            expense.setExpense_category(databaseConnector.resultSet.getString("expense_category"));
-
-            // Take user input for what to update, then update it
-            System.out.print("Expense name: ");
-            String expenseName = takeUserInputString();
-            System.out.println();
-            System.out.print("Expense amount: $");
-            double expenseAmount  = takeUserInputDouble();
-            System.out.println();
-            Expense.Categories cat = getCategoryFromUser();
-            String categoryString = Expense.getStringFromCategory(cat);
-
-
-            databaseConnector.executeUpdateStatement("UPDATE expenses " +
-                    "SET expense_name = \"" + expenseName + "\", expense_amount = " + expenseAmount + ", " +
-                    "expense_category = \"" + categoryString + "\" WHERE expenses.expense_id = " + expenseID + ";");
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("There was a problem updating your expense. Please try again later.");
-        }finally {
-            databaseConnector.closeConnection();
-        }
+        SQLUpdates.updateExpense(this.user);
     }
 
     private void addExpenses() {
@@ -179,7 +134,7 @@ public class ExpensePage extends Page {
         return expenses;
     }
 
-    private Expense.Categories getCategoryFromUser(){
+    public static Expense.Categories getCategoryFromUser(){
         int input = 0;
         Expense.Categories category = null;
         System.out.println("In what category is this expense?");
@@ -189,7 +144,7 @@ public class ExpensePage extends Page {
             boolean unconfirmed = true;
             while(unconfirmed) {
                 System.out.print("Please enter the corresponding number here: ");
-                input = takeUserInputInt();
+                input = UserInterface.takeInputInt();
                 System.out.println();
                 if (input > 0 && input < 11){
                     unconfirmed = false;

@@ -6,6 +6,7 @@ import budget_app.model.Page;
 import budget_app.services.DatabaseConnector;
 import budget_app.services.SQLDeletes;
 import budget_app.services.SQLQueries;
+import budget_app.services.SQLUpdates;
 
 
 import java.sql.SQLException;
@@ -62,55 +63,7 @@ public class AccountsPage extends Page {
 
 
     private void updateAccount() {
-        DatabaseConnector databaseConnector = new DatabaseConnector();
-        int accID;
-        System.out.println("To cancel, just type \"0\".");
-        System.out.println("Which account would you like to update? Enter the corresponding account id below: ");
-        try {
-            accID = takeUserInputInt();
-            if(accID == 0){
-                return;
-            }
-            databaseConnector.openConnection();
-            databaseConnector.resultSet = databaseConnector.executeQuery("SELECT accounts.* FROM accounts" +
-                    " WHERE accounts.account_id = " + accID + ";");
-            if(databaseConnector.resultSet == null){
-                System.out.println("The account does not exist. Please try again.");
-                return;
-            }
-            // Create the object of the account
-            databaseConnector.resultSet.next();
-            Account acc = new Account();
-            acc.setUser_id(user.getUser_id());
-            acc.setAccount_id(databaseConnector.resultSet.getInt("account_id"));
-            acc.setAccount_name(databaseConnector.resultSet.getString("account_name"));
-            acc.setBank_name(databaseConnector.resultSet.getString("bank_name"));
-            acc.setAccount_balance(databaseConnector.resultSet.getDouble("account_balance"));
-
-            // Take user input for what to update, then update it
-            System.out.print("Bank name: ");
-            String bankName = takeUserInputString();
-            System.out.println();
-            System.out.print("Account name: ");
-            String accountName = takeUserInputString();
-            System.out.println();
-            System.out.print("Account balance: ");
-            double accountBalance = takeUserInputDouble();
-
-            int rows = databaseConnector.executeUpdateStatement("UPDATE accounts " +
-                    "SET account_name = \"" + accountName + "\", bank_name = \"" + bankName + "\", " +
-                    "account_balance = " + accountBalance + " WHERE accounts.account_id = " + accID + ";");
-            if(rows != 0){
-                System.out.println("Update successful.");
-            } else {
-                System.out.println("There was a problem updating your account. Please try again later.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("There was a problem updating your account. Please try again later.");
-        }finally {
-            databaseConnector.closeConnection();
-        }
+        SQLUpdates.updateAccount(this.user);
     }
 
     // Uses a loop that takes in an int of user input to determine how many accounts

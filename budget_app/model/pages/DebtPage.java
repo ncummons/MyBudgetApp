@@ -6,6 +6,7 @@ import budget_app.model.Page;
 import budget_app.services.DatabaseConnector;
 import budget_app.services.SQLDeletes;
 import budget_app.services.SQLQueries;
+import budget_app.services.SQLUpdates;
 
 import java.sql.SQLException;
 
@@ -59,82 +60,7 @@ public class DebtPage extends Page {
     }
 
     private void updateDebt() {
-        DatabaseConnector databaseConnector = new DatabaseConnector();
-        int debtID;
-        System.out.println("To cancel, just type \"0\".");
-        System.out.println("Which Debt would you like to update? Enter the corresponding debt id below: ");
-        try {
-            debtID = takeUserInputInt();
-            if(debtID == 0){
-                return;
-            }
-            databaseConnector.openConnection();
-            databaseConnector.resultSet = databaseConnector.executeQuery("SELECT debts.* FROM debts " +
-                    "WHERE debts.debt_id = " + debtID + ";");
-
-            if(databaseConnector.resultSet == null){
-                System.out.println("The debt does not exist. Please try again.");
-                return;
-            }
-            // Create the object of the account
-            databaseConnector.resultSet.next();
-            Debt debt = new Debt();
-            debt.setUser_id(user.getUser_id());
-            debt.setDebt_id(databaseConnector.resultSet.getInt("debt_id"));
-            debt.setDebt_name(databaseConnector.resultSet.getString("debt_name"));
-            debt.setMonthly_payment(databaseConnector.resultSet.getDouble("monthly_payment"));
-            debt.setAmount(databaseConnector.resultSet.getDouble("amount"));
-            debt.setInterest_rate(databaseConnector.resultSet.getDouble("interest_rate"));
-            debt.setLender_name(databaseConnector.resultSet.getString("lender_name"));
-            debt.setDebt_due_date(databaseConnector.resultSet.getInt("debt_due_date"));
-
-            // Take user input for what to update, then update it
-            System.out.print("Debt name: ");
-            String debtName = takeUserInputString();
-            System.out.println();
-            System.out.print("Debt amount: $");
-            double debtAmount  = takeUserInputDouble();
-            System.out.println();
-            System.out.print("Monthly payment amount: $");
-            double monthlyPayment  = takeUserInputDouble();
-            System.out.println();
-            System.out.print("Debt Interest Rate (as %): ");
-            double debtInterestRate = 0;
-            boolean unconfirmed = true;
-            while(unconfirmed) {
-                debtInterestRate = takeUserInputDouble();
-                if(debtInterestRate >= 0 && debtInterestRate <= 100){
-                    unconfirmed = false;
-                } else {
-                    System.out.println("Please choose a valid percentage between 0 and 100.");
-                }
-            }
-            System.out.println();
-            System.out.print("Lender Name: ");
-            String lenderName = takeUserInputString();
-            System.out.println();
-            System.out.print("Day of the month that the debt is due: ");
-            int debtDueDate = 1;
-            unconfirmed = true;
-            while(unconfirmed) {
-                debtDueDate = takeUserInputInt();
-                if(debtDueDate > 0 && debtDueDate < 31){
-                    unconfirmed = false;
-                } else {
-                    System.out.println("Please choose a valid date between 1 and 30.");
-                }
-            }
-
-            databaseConnector.executeUpdateStatement("UPDATE debts " +
-                    "SET debt_name = \"" + debtName + "\", amount = " + debtAmount + ", interest_rate = " +
-                    debtInterestRate + ", monthly_payment = " + monthlyPayment + ", debt_due_date = " + debtDueDate +
-                    ", lender_name = \"" + lenderName + "\" WHERE debts.debt_id = " + debtID + ";");
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("There was a problem updating your debt. Please try again later.");
-        }finally {
-            databaseConnector.closeConnection();
-        }
+        SQLUpdates.updateDebt(this.user);
     }
 
     private void addDebts() {
