@@ -3,10 +3,7 @@ package budget_app.model.pages;
 import budget_app.data.CustomGoal;
 import budget_app.data.User;
 import budget_app.model.Page;
-import budget_app.services.DatabaseConnector;
-import budget_app.services.SQLDeletes;
-import budget_app.services.SQLQueries;
-import budget_app.services.SQLUpdates;
+import budget_app.services.*;
 
 import java.sql.SQLException;
 
@@ -57,69 +54,7 @@ public class CustomGoalsPage extends Page {
     }
 
     private void addCustomGoals() {
-        System.out.println("How many Goals would you like to add?");
-        int numGoals = takeUserInputInt();
-        DatabaseConnector databaseConnector = new DatabaseConnector();
-        for(int i = 0; i < numGoals; i++) {
-            try {
-                // take user input, prepare the sql insert statement, and execute the statement to insert the account
-                System.out.println("To cancel, type \"cancel\" into Goal name.");
-                System.out.println("Goal name: ");
-                String goalName = takeUserInputString();
-                if(goalName.compareToIgnoreCase("cancel") == 0){
-                    i = numGoals;
-                    return;
-                }
-                System.out.print("Total amount needed to save: $");
-                double totalNeeded = takeUserInputDouble();
-                System.out.println();
-                System.out.print("Monthly contribution amount: $");
-                double monthlyContribution = 0;
-                boolean unconfirmed = true;
-                while(unconfirmed) {
-                    monthlyContribution = takeUserInputDouble();
-                    if(monthlyContribution >= 0 && monthlyContribution <= totalNeeded){
-                        unconfirmed = false;
-                    } else {
-                        System.out.println("Please choose a valid number between 0 and the total amount needed.");
-                    }
-                }
-                System.out.println();
-                System.out.print("Current amount saved (if any): $");
-                double amountSaved = 0;
-                unconfirmed = true;
-                while(unconfirmed) {
-                    amountSaved = takeUserInputDouble();
-                    if(amountSaved >= 0 && amountSaved <= totalNeeded){
-                        unconfirmed = false;
-                    } else {
-                        System.out.println("Please choose a valid number between 0 and the total amount needed.");
-                    }
-                }
-                System.out.println();
-
-
-
-
-                String sqlInsert = "INSERT INTO custom_goals(goal_name, total_needed, monthly_contribution, " +
-                        "amount_saved, user_id) VALUES(?, ?, ?, ?, ?)";
-
-                databaseConnector.openConnection();
-
-                databaseConnector.preparedStatement = databaseConnector.prepareStatement(sqlInsert);
-                databaseConnector.preparedStatement.setString(1, goalName);
-                databaseConnector.preparedStatement.setDouble(2, totalNeeded);
-                databaseConnector.preparedStatement.setDouble(3,monthlyContribution);
-                databaseConnector.preparedStatement.setDouble(4,amountSaved);
-                databaseConnector.preparedStatement.setInt(5, user.getUser_id());
-
-                databaseConnector.executePreparedInsertStatement();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                databaseConnector.closeConnection();
-            }
-        }
+        SQLInserts.addCustomGoals(this.user);
     }
 
     private void printCustomGoalInfo(CustomGoal[] customGoals) {

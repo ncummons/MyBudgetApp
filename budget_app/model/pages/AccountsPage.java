@@ -3,10 +3,7 @@ package budget_app.model.pages;
 import budget_app.data.Account;
 import budget_app.data.User;
 import budget_app.model.Page;
-import budget_app.services.DatabaseConnector;
-import budget_app.services.SQLDeletes;
-import budget_app.services.SQLQueries;
-import budget_app.services.SQLUpdates;
+import budget_app.services.*;
 
 
 import java.sql.SQLException;
@@ -72,46 +69,7 @@ public class AccountsPage extends Page {
     // Allows users to add accounts and inserts into database
 
     private void addAccounts(){
-        System.out.println("How many accounts would you like to add?");
-        int numAccs = takeUserInputInt();
-        DatabaseConnector databaseConnector = new DatabaseConnector();
-        for(int i = 0; i < numAccs; i++) {
-            try {
-                // take user input, prepare the sql insert statement, and execute the statement to insert the account
-                System.out.println("To cancel, type \"cancel\" into account name");
-                System.out.println("Account Name: ");
-                String accountName = takeUserInputString();
-                if(accountName.compareToIgnoreCase("cancel") == 0){
-                    i = numAccs;
-                    return;
-                }
-                System.out.println("Bank Name: ");
-                String bankName = takeUserInputString();
-                System.out.println("Account Balance: ");
-                System.out.print("$");
-                double accountBalance = takeUserInputDouble();
-
-                // INSERT INTO orders ( userid, timestamp)
-                // SELECT o.userid , o.timestamp FROM users u INNER JOIN orders o ON  o.userid = u.id
-
-                String sqlInsert = "INSERT INTO accounts(account_name, bank_name, account_balance, user_id) VALUES(?, ?, ?, ?)";
-
-                databaseConnector.openConnection();
-
-                databaseConnector.preparedStatement = databaseConnector.prepareStatement(sqlInsert);
-                databaseConnector.preparedStatement.setString(1, accountName);
-                databaseConnector.preparedStatement.setString(2, bankName);
-                databaseConnector.preparedStatement.setDouble(3, accountBalance);
-                databaseConnector.preparedStatement.setInt(4, user.getUser_id());
-
-                databaseConnector.executePreparedInsertStatement();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                databaseConnector.closeConnection();
-            }
-        }
+        SQLInserts.addAccounts(this.user);
     }
 
     // Pull the user accounts from the data into an array of Accounts

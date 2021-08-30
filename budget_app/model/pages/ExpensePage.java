@@ -4,12 +4,8 @@ import budget_app.controllers.UserInterface;
 import budget_app.data.Expense;
 import budget_app.data.User;
 import budget_app.model.Page;
-import budget_app.services.DatabaseConnector;
-import budget_app.services.SQLDeletes;
-import budget_app.services.SQLQueries;
-import budget_app.services.SQLUpdates;
+import budget_app.services.*;
 
-import java.sql.SQLException;
 
 public class ExpensePage extends Page {
 
@@ -65,46 +61,7 @@ public class ExpensePage extends Page {
     }
 
     private void addExpenses() {
-        System.out.println("How many Monthly Expenses would you like to add?");
-        int numExpenses = takeUserInputInt();
-        DatabaseConnector databaseConnector = new DatabaseConnector();
-        for(int i = 0; i < numExpenses; i++) {
-            try {
-                // take user input, prepare the sql insert statement, and execute the statement to insert the account
-                System.out.println("To cancel, type \"cancel\" into Expense Name.");
-                System.out.println("Expense Name: ");
-                String expenseName = takeUserInputString();
-                if(expenseName.compareToIgnoreCase("cancel") == 0){
-                    i = numExpenses;
-                    return;
-                }
-                System.out.println("Expense amount: ");
-                System.out.print("$");
-                double expenseAmount = takeUserInputDouble();
-                System.out.println();
-
-                Expense.Categories cat = getCategoryFromUser();
-                String categoryString = Expense.getStringFromCategory(cat);
-
-
-                String sqlInsert = "INSERT INTO expenses(expense_name, expense_category, " +
-                        "expense_amount, user_id) VALUES(?, ?, ?, ?)";
-
-                databaseConnector.openConnection();
-
-                databaseConnector.preparedStatement = databaseConnector.prepareStatement(sqlInsert);
-                databaseConnector.preparedStatement.setString(1, expenseName);
-                databaseConnector.preparedStatement.setString(2, categoryString);
-                databaseConnector.preparedStatement.setDouble(3, expenseAmount);
-                databaseConnector.preparedStatement.setInt(4, user.getUser_id());
-
-                databaseConnector.executePreparedInsertStatement();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                databaseConnector.closeConnection();
-            }
-        }
+        SQLInserts.addExpenses(this.user);
     }
 
     // Need to find a way to format the output of this to print only two decimals (also for the other print totals)n
