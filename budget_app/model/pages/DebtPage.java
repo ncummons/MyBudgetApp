@@ -5,6 +5,7 @@ import budget_app.data.User;
 import budget_app.model.Page;
 import budget_app.services.DatabaseConnector;
 import budget_app.services.SQLDeletes;
+import budget_app.services.SQLQueries;
 
 import java.sql.SQLException;
 
@@ -231,48 +232,7 @@ public class DebtPage extends Page {
     }
 
     private Debt[] getDebts() {
-        Debt[] debts = null;
-        DatabaseConnector databaseConnector = new DatabaseConnector();
-        try {
-
-            // Get the number of expenses from the query, to dynamically increase or decrease the size of the array
-            databaseConnector.openConnection();
-            databaseConnector.resultSet = databaseConnector.executeQuery("SELECT COUNT(debts.debt_id) FROM debts" +
-                    " INNER JOIN users" +
-                    " ON users.user_id = debts.user_id " +
-                    "WHERE users.user_id = " + user.getUser_id() + ";");
-            databaseConnector.resultSet.next();
-            int numDebts = databaseConnector.resultSet.getInt("COUNT(debts.debt_id)");
-            databaseConnector.closeConnection();
-
-            // Query the accounts and map them to account objects, then populate array
-
-            debts = new Debt[numDebts]; // Accounts Array to be returned
-
-            databaseConnector.openConnection();
-            databaseConnector.resultSet = databaseConnector.executeQuery("SELECT debts.* FROM debts" +
-                    " INNER JOIN users" +
-                    " ON users.user_id = debts.user_id " +
-                    "WHERE users.user_id = " + user.getUser_id() + ";");
-            int i = 0;
-            while (databaseConnector.resultSet.next()) {
-                Debt debt = new Debt();
-                debt.setDebt_id(databaseConnector.resultSet.getInt("debt_id"));
-                debt.setDebt_name(databaseConnector.resultSet.getString("debt_name"));
-                debt.setAmount(databaseConnector.resultSet.getDouble("amount"));
-                debt.setMonthly_payment(databaseConnector.resultSet.getDouble("monthly_payment"));
-                debt.setInterest_rate(databaseConnector.resultSet.getDouble("interest_rate"));
-                debt.setDebt_due_date(databaseConnector.resultSet.getInt("debt_due_date"));
-                debt.setLender_name(databaseConnector.resultSet.getString("lender_name"));
-                debt.setUser_id(user.getUser_id());
-                debts[i] = debt;
-                i++;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            databaseConnector.closeConnection();
-        }
+        Debt[] debts = SQLQueries.getDebts(this.user);
         return debts;
     }
 }

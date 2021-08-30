@@ -5,6 +5,7 @@ import budget_app.data.User;
 import budget_app.model.Page;
 import budget_app.services.DatabaseConnector;
 import budget_app.services.SQLDeletes;
+import budget_app.services.SQLQueries;
 
 import java.sql.SQLException;
 
@@ -174,45 +175,7 @@ public class ExpensePage extends Page {
     }
 
     private Expense[] getExpenses() {
-        Expense[] expenses = null;
-        DatabaseConnector databaseConnector = new DatabaseConnector();
-        try {
-
-            // Get the number of expenses from the query, to dynamically increase or decrease the size of the array
-            databaseConnector.openConnection();
-            databaseConnector.resultSet = databaseConnector.executeQuery("SELECT COUNT(expenses.expense_id) FROM expenses" +
-                    " INNER JOIN users" +
-                    " ON users.user_id = expenses.user_id " +
-                    "WHERE users.user_id = " + user.getUser_id() + ";");
-            databaseConnector.resultSet.next();
-            int numExpenses = databaseConnector.resultSet.getInt("COUNT(expenses.expense_id)");
-            databaseConnector.closeConnection();
-
-            // Query the accounts and map them to account objects, then populate array
-
-            expenses = new Expense[numExpenses]; // Accounts Array to be returned
-
-            databaseConnector.openConnection();
-            databaseConnector.resultSet = databaseConnector.executeQuery("SELECT expenses.* FROM expenses" +
-                    " INNER JOIN users" +
-                    " ON users.user_id = expenses.user_id " +
-                    "WHERE users.user_id = " + user.getUser_id() + ";");
-            int i = 0;
-            while (databaseConnector.resultSet.next()) {
-                Expense expense = new Expense();
-                expense.setExpense_id(databaseConnector.resultSet.getInt("expense_id"));
-                expense.setExpense_name(databaseConnector.resultSet.getString("expense_name"));
-                expense.setExpense_category(databaseConnector.resultSet.getString("expense_category"));
-                expense.setExpense_amount(databaseConnector.resultSet.getDouble("expense_amount"));
-                expense.setUser_id(user.getUser_id());
-                expenses[i] = expense;
-                i++;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            databaseConnector.closeConnection();
-        }
+        Expense[] expenses = SQLQueries.getExpenses(this.user);
         return expenses;
     }
 

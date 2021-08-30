@@ -5,6 +5,7 @@ import budget_app.data.User;
 import budget_app.model.Page;
 import budget_app.services.DatabaseConnector;
 import budget_app.services.SQLDeletes;
+import budget_app.services.SQLQueries;
 
 import java.sql.SQLException;
 
@@ -204,46 +205,7 @@ public class CustomGoalsPage extends Page {
     }
 
     private CustomGoal[] getCustomGoals() {
-        CustomGoal[] customGoals = null;
-        DatabaseConnector databaseConnector = new DatabaseConnector();
-        try {
-
-            // Get the number of expenses from the query, to dynamically increase or decrease the size of the array
-            databaseConnector.openConnection();
-            databaseConnector.resultSet = databaseConnector.executeQuery("SELECT COUNT(custom_goals.custom_goal_id) FROM custom_goals" +
-                    " INNER JOIN users" +
-                    " ON users.user_id = custom_goals.user_id " +
-                    "WHERE users.user_id = " + user.getUser_id() + ";");
-            databaseConnector.resultSet.next();
-            int numGoals = databaseConnector.resultSet.getInt("COUNT(custom_goals.custom_goal_id)");
-            databaseConnector.closeConnection();
-
-            // Query the accounts and map them to account objects, then populate array
-
-            customGoals = new CustomGoal[numGoals]; // Accounts Array to be returned
-
-            databaseConnector.openConnection();
-            databaseConnector.resultSet = databaseConnector.executeQuery("SELECT custom_goals.* FROM custom_goals" +
-                    " INNER JOIN users" +
-                    " ON users.user_id = custom_goals.user_id " +
-                    "WHERE users.user_id = " + user.getUser_id() + ";");
-            int i = 0;
-            while (databaseConnector.resultSet.next()) {
-                CustomGoal customGoal = new CustomGoal();
-                customGoal.setCustom_goal_id(databaseConnector.resultSet.getInt("custom_goal_id"));
-                customGoal.setGoal_name(databaseConnector.resultSet.getString("goal_name"));
-                customGoal.setTotal_needed(databaseConnector.resultSet.getDouble("total_needed"));
-                customGoal.setMonthly_contribution(databaseConnector.resultSet.getDouble("monthly_contribution"));
-                customGoal.setAmount_saved(databaseConnector.resultSet.getDouble("amount_saved"));
-                customGoal.setUser_id(user.getUser_id());
-                customGoals[i] = customGoal;
-                i++;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            databaseConnector.closeConnection();
-        }
+        CustomGoal[] customGoals = SQLQueries.getCustomGoals(this.user);
         return customGoals;
     }
 

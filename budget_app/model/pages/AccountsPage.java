@@ -5,6 +5,7 @@ import budget_app.data.User;
 import budget_app.model.Page;
 import budget_app.services.DatabaseConnector;
 import budget_app.services.SQLDeletes;
+import budget_app.services.SQLQueries;
 
 
 import java.sql.SQLException;
@@ -163,44 +164,7 @@ public class AccountsPage extends Page {
     // Pull the user accounts from the data into an array of Accounts
 
     private Account[] getAccounts(){
-        Account[] accounts = null;
-        DatabaseConnector databaseConnector = new DatabaseConnector();
-        try{
-
-            // Get the number of accounts from the query, to dynamically increase or decrease the size of the array
-            databaseConnector.openConnection();
-            databaseConnector.resultSet = databaseConnector.executeQuery("SELECT COUNT(accounts.account_id) FROM accounts" +
-                    " INNER JOIN users" +
-                    " ON users.user_id = accounts.user_id " +
-                    "WHERE users.user_id = " + user.getUser_id() + ";");
-            databaseConnector.resultSet.next();
-            int numAccounts = databaseConnector.resultSet.getInt("COUNT(accounts.account_id)");
-            databaseConnector.closeConnection();
-
-            // Query the accounts and map them to account objects, then populate array
-
-            accounts = new Account[numAccounts]; // Accounts Array to be returned
-
-            databaseConnector.openConnection();
-            databaseConnector.resultSet = databaseConnector.executeQuery("SELECT accounts.* FROM accounts" +
-                    " INNER JOIN users" +
-                    " ON users.user_id = accounts.user_id " +
-                    "WHERE users.user_id = " + user.getUser_id() + ";");
-            int i = 0;
-            while(databaseConnector.resultSet.next()){
-                Account acc = new Account();
-                acc.setAccount_id(databaseConnector.resultSet.getInt("account_id"));
-                acc.setAccount_name(databaseConnector.resultSet.getString("account_name"));
-                acc.setBank_name(databaseConnector.resultSet.getString("bank_name"));
-                acc.setAccount_balance(databaseConnector.resultSet.getDouble("account_balance"));
-                accounts[i] = acc;
-                i++;
-            }
-        } catch (SQLException e){
-            e.printStackTrace();
-        } finally {
-            databaseConnector.closeConnection();
-        }
+        Account[] accounts = SQLQueries.getAccounts(this.user);
         return accounts;
     }
 
