@@ -1,6 +1,7 @@
 package budget_app.model.pages;
 
 import budget_app.data.Account;
+import budget_app.data.Debt;
 import budget_app.data.User;
 import budget_app.model.Page;
 import budget_app.services.*;
@@ -36,6 +37,7 @@ public class AccountsPage extends Page {
         printPage();
         Account[] accounts = getAccounts();
         printAccountInfo(accounts);
+        printTotalAccounts(accounts);
         int input = takeUserInputInt();
         switch (input){
             case 1: return new MainMenu(user);
@@ -77,6 +79,13 @@ public class AccountsPage extends Page {
     private Account[] getAccounts(){
         Account[] accounts = SQLQueries.getAccounts(this.user);
         return accounts;
+    }
+
+    private void printTotalAccounts(Account[] accounts) {
+        double totalDebt = Calculations.accountsTotal(accounts);
+        System.out.print("Your accounts total is: $");
+        System.out.printf("%.2f", totalDebt);
+        System.out.println();
     }
 
     // Prints out the user account information from the array of accounts

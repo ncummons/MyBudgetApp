@@ -72,10 +72,7 @@ public class IncomePage extends Page {
     }
 
     private void printTotalIncome(Income[] incomes){
-        double totalIncome = 0;
-        for (Income i: incomes) {
-            totalIncome += (i.getIncome_amount() * i.getIncome_per_month());
-        }
+        double totalIncome = Calculations.incomeTotal(incomes);
         System.out.print("Your total monthly income is: $");
         System.out.printf("%.2f", totalIncome);
         System.out.println();

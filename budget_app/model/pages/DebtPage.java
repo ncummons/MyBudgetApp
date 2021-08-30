@@ -65,10 +65,7 @@ public class DebtPage extends Page {
     }
 
     private void printTotalDebt(Debt[] debts) {
-        double totalDebt = 0;
-        for (Debt d: debts) {
-            totalDebt += d.getAmount();
-        }
+        double totalDebt = Calculations.debtsTotal(debts);
         System.out.print("Your total debt is: $");
         System.out.printf("%.2f", totalDebt);
         System.out.println();

@@ -54,6 +54,27 @@ public class SQLQueries {
         return accounts;
     }
 
+    public static Account getAccount(int account_id){
+        Account acc = null;
+        DatabaseConnector databaseConnector = new DatabaseConnector();
+        try{
+            String sql = "SELECT * FROM accounts WHERE accounts.account_id = ?";
+            databaseConnector.preparedStatement = databaseConnector.prepareStatement(sql);
+            databaseConnector.preparedStatement.setInt(1, account_id);
+            databaseConnector.executePreparedSelectStatement();
+            acc.setAccount_id(databaseConnector.resultSet.getInt("account_id"));
+            acc.setAccount_name(databaseConnector.resultSet.getString("account_name"));
+            acc.setBank_name(databaseConnector.resultSet.getString("bank_name"));
+            acc.setAccount_balance(databaseConnector.resultSet.getDouble("account_balance"));
+            acc.setUser_id(databaseConnector.resultSet.getInt("user_id"));
+        } catch (Exception e) {
+            System.out.println("There was a problem finding the account.");
+        } finally {
+            databaseConnector.closeConnection();
+        }
+        return acc;
+    }
+
     public static CustomGoal[] getCustomGoals(User user){
         CustomGoal[] customGoals = null;
         DatabaseConnector databaseConnector = new DatabaseConnector();
@@ -154,6 +175,30 @@ public class SQLQueries {
             databaseConnector.closeConnection();
         }
         return debts;
+    }
+
+    public static Debt getDebt(int debt_id){
+        Debt debt = null;
+        DatabaseConnector databaseConnector = new DatabaseConnector();
+        try{
+            String sql = "SELECT * FROM debts WHERE debts.debt_id = ?";
+            databaseConnector.preparedStatement = databaseConnector.prepareStatement(sql);
+            databaseConnector.preparedStatement.setInt(1, debt_id);
+            databaseConnector.executePreparedSelectStatement();
+            debt.setDebt_id(databaseConnector.resultSet.getInt("debt_id"));
+            debt.setDebt_name(databaseConnector.resultSet.getString("debt_name"));
+            debt.setAmount(databaseConnector.resultSet.getDouble("amount"));
+            debt.setMonthly_payment(databaseConnector.resultSet.getDouble("monthly_payment"));
+            debt.setInterest_rate(databaseConnector.resultSet.getDouble("interest_rate"));
+            debt.setLender_name(databaseConnector.resultSet.getString("lender_name"));
+            debt.setDebt_due_date(databaseConnector.resultSet.getInt("debt_due_date"));
+            debt.setUser_id(databaseConnector.resultSet.getInt("user_id"));
+        } catch (Exception e) {
+            System.out.println("There was a problem finding the debt.");
+        } finally {
+            databaseConnector.closeConnection();
+        }
+        return debt;
     }
 
     public static Expense[] getExpenses(User user){

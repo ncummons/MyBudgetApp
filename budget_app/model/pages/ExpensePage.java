@@ -67,10 +67,7 @@ public class ExpensePage extends Page {
     // Need to find a way to format the output of this to print only two decimals (also for the other print totals)n
 
     private void printTotalExpenses(Expense[] expenses){
-        double totalExpenses = 0;
-        for (Expense e: expenses) {
-            totalExpenses += e.getExpense_amount();
-        }
+        double totalExpenses = Calculations.expensesTotal(expenses);
         System.out.print("Your total monthly expenses are: $");
         System.out.printf("%.2f", totalExpenses);
         System.out.println();

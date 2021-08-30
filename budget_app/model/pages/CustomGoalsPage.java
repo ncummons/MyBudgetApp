@@ -59,8 +59,8 @@ public class CustomGoalsPage extends Page {
 
     private void printCustomGoalInfo(CustomGoal[] customGoals) {
         for (CustomGoal c: customGoals) {
-            int monthsToGoal = (int)Math.ceil((c.getTotal_needed() - c.getAmount_saved()) / c.getMonthly_contribution());
-            double amountLeft = c.getTotal_needed() - c.getAmount_saved();
+            int monthsToGoal = Calculations.customGoalMonthsToGoal(c);
+            double amountLeft = Calculations.amountToGoal(c);
             System.out.print("Goal ID: " + c.getCustom_goal_id() + " | Goal Name: " + c.getGoal_name() + " |");
             System.out.println();
             System.out.println("Total Amount Needed: $" + c.getTotal_needed() +
