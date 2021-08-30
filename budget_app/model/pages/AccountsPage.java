@@ -4,6 +4,7 @@ import budget_app.data.Account;
 import budget_app.data.User;
 import budget_app.model.Page;
 import budget_app.services.DatabaseConnector;
+import budget_app.services.SQLDeletes;
 
 
 import java.sql.SQLException;
@@ -55,23 +56,7 @@ public class AccountsPage extends Page {
     }
 
     private void deleteAccount() {
-        DatabaseConnector databaseConnector = new DatabaseConnector();
-        int accID;
-        System.out.println("To cancel, just type \"0\".");
-        System.out.println("Which account would you like to delete? Enter the corresponding account id below.");
-        try {
-            accID = takeUserInputInt();
-            if(accID ==0){
-                return;
-            }
-            String sql = "DELETE FROM ACCOUNTS WHERE account_id = " + accID + ";";
-            databaseConnector.openConnection();
-            databaseConnector.executeDeleteStatement(sql);
-        } catch (Exception e){
-            e.printStackTrace();
-        } finally {
-            databaseConnector.closeConnection();
-        }
+        SQLDeletes.deleteAccount(this.user);
     }
 
 

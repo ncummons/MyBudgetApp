@@ -3,7 +3,7 @@ package budget_app.model.pages;
 import budget_app.data.Income;
 import budget_app.data.User;
 import budget_app.model.Page;
-import budget_app.services.DatabaseConnector;
+import budget_app.services.*;
 
 import java.sql.SQLException;
 
@@ -60,169 +60,23 @@ public class IncomePage extends Page {
     }
 
     private void deleteIncome() {
-        DatabaseConnector databaseConnector = new DatabaseConnector();
-        int incID;
-        System.out.println("Which Income would you like to delete? Enter the corresponding income id below.");
-        System.out.println("To cancel, just type \"0\".");
-        try {
-            incID = takeUserInputInt();
-            if (incID == 0){
-                return;
-            }
-            String sql = "DELETE FROM income WHERE income_id = " + incID + ";";
-            databaseConnector.openConnection();
-            databaseConnector.executeDeleteStatement(sql);
-        } catch (
-                Exception e) {
-            e.printStackTrace();
-        } finally {
-            databaseConnector.closeConnection();
-        }
+        SQLDeletes.deleteIncome(this.user);
     }
 
     private void updateIncome() {
-        DatabaseConnector databaseConnector = new DatabaseConnector();
-        int incID;
-        System.out.println("Which Income would you like to update? Enter the corresponding income id below: ");
-        System.out.println("To cancel, just type \"0\".");
-        try {
-            incID = takeUserInputInt();
-            if(incID == 0){
-                return;
-            }
-            databaseConnector.openConnection();
-            databaseConnector.resultSet = databaseConnector.executeQuery("SELECT income.* FROM income " +
-                    "WHERE income.income_id = " + incID + ";");
-            if(databaseConnector.resultSet == null){
-                System.out.println("The income does not exist. Please try again.");
-                return;
-            }
-            // Create the object of the account
-            databaseConnector.resultSet.next();
-            Income inc = new Income();
-            inc.setUser_id(user.getUser_id());
-            inc.setIncome_id(databaseConnector.resultSet.getInt("income_id"));
-            inc.setIncome_amount(databaseConnector.resultSet.getDouble("income_amount"));
-            inc.setIncome_source(databaseConnector.resultSet.getString("income_source"));
-            inc.setIncome_per_month(databaseConnector.resultSet.getInt("income_per_month"));
-            int boolInt = databaseConnector.resultSet.getInt("is_one_time");
-            if(boolInt == 1) {
-                inc.setIs_one_time(true);
-            }else{
-                inc.setIs_one_time(false);
-            }
-
-            // Take user input for what to update, then update it
-            System.out.println("Income source: ");
-            String incomeSource = takeUserInputString();
-            System.out.println();
-            System.out.print("Income amount: $");
-            double incAmount  = takeUserInputDouble();
-            System.out.println();
-            System.out.print("Is this a one time income? (Type yes or no): ");
-            boolean unconfirmed = true;
-            int incOT = 0;
-            while(unconfirmed){
-                String userInput = takeUserInputString();
-                if(userInput.compareToIgnoreCase("yes") == 0){
-                    incOT = 1;
-                    unconfirmed = false;
-                } else if(userInput.compareToIgnoreCase("no")==0){
-                    incOT = 0;
-                    unconfirmed = false;
-                } else {
-                    System.out.println("Please only type \"yes\" or \"no\".");
-                    System.out.print("Is this a one time income? (Type yes or no): ");
-                }
-            }
-            System.out.println();
-            System.out.print("How many times per month do you receive this paycheck? | ");
-            int income_per_month = takeUserInputInt();
-
-            int rows = databaseConnector.executeUpdateStatement("UPDATE income " +
-                    "SET income_source = \"" + incomeSource + "\", income_amount = " + incAmount + ", " +
-                    "is_one_time = " + incOT + ", income_per_month = " + income_per_month +
-                    " WHERE income.income_id = " + incID + ";");
-            if(rows != 0){
-                System.out.println("Update successful.");
-            } else {
-                System.out.println("There was a problem updating your income. Please try again later.");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("There was a problem updating your income. Please try again later.");
-        }finally {
-            databaseConnector.closeConnection();
-        }
+        SQLUpdates.updateIncome(this.user);
     }
 
     private void addIncomes() {
-        System.out.println("How many income sources would you like to add?");
-        int numIncomes = takeUserInputInt();
-        DatabaseConnector databaseConnector = new DatabaseConnector();
-        for(int i = 0; i < numIncomes; i++) {
-            try {
-                // take user input, prepare the sql insert statement, and execute the statement to insert the account
-                System.out.println("To cancel, type \"cancel\" into income source.");
-                System.out.println("Income source: ");
-                String incomeSource = takeUserInputString();
-                if(incomeSource.compareToIgnoreCase("cancel") == 0){
-                    i = numIncomes;
-                    return;
-                }
-                System.out.println("Income amount: ");
-                System.out.print("$");
-                double incomeAmt = takeUserInputDouble();
-                System.out.print("Is this a one time income? (Type yes or no): ");
-                boolean unconfirmed = true;
-                int incOT = 0;
-                while(unconfirmed){
-                    String userInput = takeUserInputString();
-                    if(userInput.compareToIgnoreCase("yes") == 0){
-                        incOT = 1;
-                        unconfirmed = false;
-                    } else if(userInput.compareToIgnoreCase("no")==0){
-                        incOT = 0;
-                        unconfirmed = false;
-                    } else {
-                        System.out.println("Please only type \"yes\" or \"no\".");
-                        System.out.print("Is this a one time income? (Type yes or no): ");
-                    }
-                }
-                System.out.print("How many times per month do you receive this paycheck? (Enter 0 if one time) | ");
-                int income_per_month = takeUserInputInt();
-
-                // INSERT INTO orders ( userid, timestamp)
-                // SELECT o.userid , o.timestamp FROM users u INNER JOIN orders o ON  o.userid = u.id
-
-                String sqlInsert = "INSERT INTO income(income_source, income_amount, " +
-                        "is_one_time, income_per_month, user_id) VALUES(?, ?, ?, ?, ?)";
-
-                databaseConnector.openConnection();
-
-                databaseConnector.preparedStatement = databaseConnector.prepareStatement(sqlInsert);
-                databaseConnector.preparedStatement.setString(1, incomeSource);
-                databaseConnector.preparedStatement.setDouble(2, incomeAmt);
-                databaseConnector.preparedStatement.setInt(3, incOT);
-                databaseConnector.preparedStatement.setInt(4,income_per_month);
-                databaseConnector.preparedStatement.setInt(5, user.getUser_id());
-
-                databaseConnector.executePreparedInsertStatement();
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } finally {
-                databaseConnector.closeConnection();
-            }
-        }
+        SQLInserts.addIncomes(this.user);
     }
 
     private void printTotalIncome(Income[] incomes){
         double totalIncome = 0;
         for (Income i: incomes) {
-            totalIncome += i.getIncome_amount();
+            totalIncome += (i.getIncome_amount() * i.getIncome_per_month());
         }
-        System.out.print("Your total income is: $");
+        System.out.print("Your total monthly income is: $");
         System.out.printf("%.2f", totalIncome);
         System.out.println();
     }
@@ -243,51 +97,7 @@ public class IncomePage extends Page {
     }
 
     private Income[] getIncomes() {
-        Income[] incomes = null;
-        DatabaseConnector databaseConnector = new DatabaseConnector();
-        try {
-
-            // Get the number of incomes from the query, to dynamically increase or decrease the size of the array
-            databaseConnector.openConnection();
-            databaseConnector.resultSet = databaseConnector.executeQuery("SELECT COUNT(income.income_id) FROM income" +
-                    " INNER JOIN users" +
-                    " ON users.user_id = income.user_id " +
-                    "WHERE users.user_id = " + user.getUser_id() + ";");
-            databaseConnector.resultSet.next();
-            int numIncomes = databaseConnector.resultSet.getInt("COUNT(income.income_id)");
-            databaseConnector.closeConnection();
-
-            // Query the accounts and map them to account objects, then populate array
-
-            incomes = new Income[numIncomes]; // Accounts Array to be returned
-
-            databaseConnector.openConnection();
-            databaseConnector.resultSet = databaseConnector.executeQuery("SELECT income.* FROM income" +
-                    " INNER JOIN users" +
-                    " ON users.user_id = income.user_id " +
-                    "WHERE users.user_id = " + user.getUser_id() + ";");
-            int i = 0;
-            while (databaseConnector.resultSet.next()) {
-                Income inc = new Income();
-                inc.setIncome_id(databaseConnector.resultSet.getInt("income_id"));
-                inc.setIncome_source(databaseConnector.resultSet.getString("income_source"));
-                inc.setIncome_amount(databaseConnector.resultSet.getDouble("income_amount"));
-                inc.setIncome_per_month(databaseConnector.resultSet.getInt("income_per_month"));
-                int boolInt = databaseConnector.resultSet.getInt("is_one_time");
-                if (boolInt == 1) {
-                    inc.setIs_one_time(true);
-                } else {
-                    inc.setIs_one_time(false);
-                }
-                inc.setUser_id(user.getUser_id());
-                incomes[i] = inc;
-                i++;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } finally {
-            databaseConnector.closeConnection();
-        }
+        Income[] incomes = SQLQueries.getIncomes(this.user);
         return incomes;
     }
 }

@@ -4,6 +4,7 @@ import budget_app.data.CustomGoal;
 import budget_app.data.User;
 import budget_app.model.Page;
 import budget_app.services.DatabaseConnector;
+import budget_app.services.SQLDeletes;
 
 import java.sql.SQLException;
 
@@ -46,23 +47,7 @@ public class CustomGoalsPage extends Page {
     }
 
     private void deleteCustomGoal() {
-        DatabaseConnector databaseConnector = new DatabaseConnector();
-        int customGoalID;
-        System.out.println("To cancel, just type \"0\".");
-        System.out.println("Which goal would you like to delete? Enter the corresponding goal id below.");
-        try {
-            customGoalID = takeUserInputInt();
-            if(customGoalID == 0){
-                return;
-            }
-            String sql = "DELETE FROM custom_goals WHERE custom_goal_id = " + customGoalID + ";";
-            databaseConnector.openConnection();
-            databaseConnector.executeDeleteStatement(sql);
-        } catch (Exception e){
-            e.printStackTrace();
-        } finally {
-            databaseConnector.closeConnection();
-        }
+        SQLDeletes.deleteCustomGoal(this.user);
     }
 
     private void updateCustomGoal() {

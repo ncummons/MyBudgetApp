@@ -129,16 +129,15 @@ public class DatabaseConnector {
         return returnInt;
     }
 
-    public boolean executeDeleteStatement(String delete){
-        boolean successful = false;
+    public int executePreparedDeleteStatement(){
+        int ret = 0;
         try{
-            statement = connection.createStatement();
-            successful = statement.execute(delete);
+            ret = preparedStatement.executeUpdate();
         } catch (SQLException e){
             e.printStackTrace();
             System.out.println("Delete failed.");
         }
-        return successful;
+        return ret;
     }
 
     public void closeConnection(){

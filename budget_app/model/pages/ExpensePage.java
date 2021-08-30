@@ -4,6 +4,7 @@ import budget_app.data.Expense;
 import budget_app.data.User;
 import budget_app.model.Page;
 import budget_app.services.DatabaseConnector;
+import budget_app.services.SQLDeletes;
 
 import java.sql.SQLException;
 
@@ -53,23 +54,7 @@ public class ExpensePage extends Page {
 }
 
     private void deleteExpense() {
-        DatabaseConnector databaseConnector = new DatabaseConnector();
-        int expenseID;
-        System.out.println("To cancel, just type \"0\".");
-        System.out.println("Which Expense would you like to delete? Enter the corresponding expense id below.");
-        try {
-            expenseID = takeUserInputInt();
-            if(expenseID == 0){
-                return;
-            }
-            String sql = "DELETE FROM expenses WHERE expense_id = " + expenseID + ";";
-            databaseConnector.openConnection();
-            databaseConnector.executeDeleteStatement(sql);
-        } catch (Exception e){
-            e.printStackTrace();
-        } finally {
-            databaseConnector.closeConnection();
-        }
+        SQLDeletes.deleteExpense(this.user);
     }
 
     private void updateExpense() {

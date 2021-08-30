@@ -4,9 +4,9 @@ import java.util.Scanner;
 
 public class UserInterface {
 
-    Scanner input = new Scanner(System.in);
+    static Scanner input = new Scanner(System.in);
 
-    public String takeInputString(){
+    public static String takeInputString(){
         boolean isDone = false;
         String ret = null;
         while(!isDone) {
@@ -21,7 +21,7 @@ public class UserInterface {
         return ret;
     }
 
-    public int takeInputInt(){
+    public static int takeInputInt(){
         boolean isDone = false;
         int ret = 0;
         while(!isDone) {
@@ -36,7 +36,7 @@ public class UserInterface {
         return ret;
     }
 
-    public double takeInputDouble(){
+    public static double takeInputDouble(){
         boolean isDone = false;
         double ret = 0;
         while(!isDone) {

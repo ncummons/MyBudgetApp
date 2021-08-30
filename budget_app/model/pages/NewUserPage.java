@@ -3,6 +3,7 @@ package budget_app.model.pages;
 import budget_app.data.User;
 import budget_app.model.Page;
 import budget_app.services.DatabaseConnector;
+import budget_app.services.SQLInserts;
 
 
 public class NewUserPage extends Page {
@@ -66,21 +67,7 @@ public class NewUserPage extends Page {
 
     // Inserts the user information into the database
     private void insertUser(){
-        DatabaseConnector databaseConnector = new DatabaseConnector();
-        try{
-            databaseConnector.openConnection();
-            String sql = "INSERT INTO Users(first_name, last_name, username, password) VALUES (?, ?, ?, ?)";
-            databaseConnector.prepareStatement(sql);
-            databaseConnector.preparedStatement.setString(1, user.getFirst_name());
-            databaseConnector.preparedStatement.setString(2, user.getLast_name());
-            databaseConnector.preparedStatement.setString(3, user.getUsername());
-            databaseConnector.preparedStatement.setString(4, user.getPassword());
-            databaseConnector.executePreparedInsertStatement();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            databaseConnector.closeConnection();
-        }
+        SQLInserts.addUser(this.user);
     }
 
     // Actual operations of the page, this is the "main method" of the page
