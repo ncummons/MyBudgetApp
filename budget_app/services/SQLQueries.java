@@ -55,10 +55,11 @@ public class SQLQueries {
     }
 
     public static Account getAccount(int account_id){
-        Account acc = null;
+        Account acc = new Account();
         DatabaseConnector databaseConnector = new DatabaseConnector();
         try{
             String sql = "SELECT * FROM accounts WHERE accounts.account_id = ?";
+            databaseConnector.openConnection();
             databaseConnector.preparedStatement = databaseConnector.prepareStatement(sql);
             databaseConnector.preparedStatement.setInt(1, account_id);
             databaseConnector.executePreparedSelectStatement();
@@ -178,13 +179,15 @@ public class SQLQueries {
     }
 
     public static Debt getDebt(int debt_id){
-        Debt debt = null;
+        Debt debt = new Debt();
         DatabaseConnector databaseConnector = new DatabaseConnector();
         try{
             String sql = "SELECT * FROM debts WHERE debts.debt_id = ?";
+            databaseConnector.openConnection();
             databaseConnector.preparedStatement = databaseConnector.prepareStatement(sql);
             databaseConnector.preparedStatement.setInt(1, debt_id);
             databaseConnector.executePreparedSelectStatement();
+            databaseConnector.resultSet.next();
             debt.setDebt_id(databaseConnector.resultSet.getInt("debt_id"));
             debt.setDebt_name(databaseConnector.resultSet.getString("debt_name"));
             debt.setAmount(databaseConnector.resultSet.getDouble("amount"));

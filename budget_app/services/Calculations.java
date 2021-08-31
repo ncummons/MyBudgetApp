@@ -1,7 +1,6 @@
 package budget_app.services;
 
 import budget_app.data.*;
-import budget_app.model.*;
 
 public class Calculations {
 
@@ -37,17 +36,50 @@ public class Calculations {
         return totalIncome;
     }
 
-    public static int monthsToPayOff(Debt debt, Account account){
-        // Be sure to add in interest (not 100% sure how this will go mathematically)
-        return 0;
+    public static int percentageChangePayOff(Debt debt, double percentChange){
+        double monthlyInterest = debt.getInterest_rate() / 1200;
+        double monthlyPayment = debt.getMonthly_payment();
+        double outstandingBalance = debt.getAmount();
+        double numMonths;
+        double newMonthlyPayment = monthlyPayment * (1 + (percentChange/100));
+        numMonths = -(Math.log(1 - ((outstandingBalance * monthlyInterest)) / newMonthlyPayment) / Math.log(1 + monthlyInterest));
+        int intMonths = (int)Math.ceil(numMonths);
+        return intMonths;
+    }
+
+    public static int monthsToPayOff(Debt debt){
+        //N = –[ln(1 – [(PV * i) / PMT_] ) / ln(1 + _i)]
+        double monthlyInterest = debt.getInterest_rate() / 1200;
+        double monthlyPayment = debt.getMonthly_payment();
+        double outstandingBalance = debt.getAmount();
+        double numMonths;
+        numMonths = -(Math.log(1 - ((outstandingBalance * monthlyInterest) / monthlyPayment)) / Math.log(1 + monthlyInterest));
+        int intMonths = (int)Math.ceil(numMonths);
+        return intMonths;
     }
 
     public static double spendingToSavingRatio(Expense[] expenses, CustomGoal[] customGoals){
         return expensesTotal(expenses) / totalSavings(customGoals);
     }
 
+    public static double netIncome(Expense[] expenses, Income[] incomes){
+        return incomeTotal(incomes) - expensesTotal(expenses);
+    }
+
     public static double debtToIncomeRatio(Income[] incomes, Debt[] debts){
-        return debtsTotal(debts) / incomeTotal(incomes);
+        return debtsTotal(debts) / (incomeTotal(incomes) * 12);
+    }
+
+    public static Debt highestInterestDebt(Debt[] debts){
+        Debt debt = null;
+        double maxInterest = 0;
+        for(Debt d: debts){
+            if (d.getInterest_rate() > maxInterest){
+                maxInterest = d.getInterest_rate();
+                debt = d;
+            }
+        }
+        return debt;
     }
 
     public static double totalSavings(CustomGoal[] customGoals){
